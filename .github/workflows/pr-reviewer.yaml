@@ -1,0 +1,14 @@
+on:
+  pull_request: # Trigger the workflow on pull request events
+    types: [opened, synchronize] # Run the workflow when pull request is opened or synchronized
+jobs:
+  hello_world_job: # Define the job
+    runs-on: ubuntu-latest # Specify the runner to run the job on
+    name: PR Reviewer # Job name
+    steps:
+      - name: Review PR code # Step name
+        uses: cafijo/pull-requests-reviewer-ia:latest # Use the ChatGPT Github Actions from a doc
+        with:
+          openai_api_key: ${{secrets.OPENAI_API_KEY}} # Get the OpenAI API key from repository secrets
+          github_token: ${{secrets.GITHUB_TOKEN}} # Get the Github Token from repository secrets
+          github_pr_id: ${{github.event.pull_request.number}}
