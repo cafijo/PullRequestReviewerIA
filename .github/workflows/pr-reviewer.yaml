@@ -7,7 +7,7 @@ jobs:
     name: PR Reviewer # Job name
     steps:
       - name: Review PR code # Step name
-        uses: cafijo/pull-requests-reviewer-ia@v2 # Use the ChatGPT Github Actions from a doc
+        uses: cafijo/pull-requests-reviewer-ia@v2 # Use the ChatGPT Github Actions from a doc a
         with:
           openai_api_key: ${{secrets.OPENAI_API_KEY}} # Get the OpenAI API key from repository secrets
           github_token: ${{secrets.GITHUB_TOKEN}} # Get the Github Token from repository secrets
