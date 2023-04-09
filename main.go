@@ -96,16 +96,16 @@ func main() {
 		reviewResult[filename] = append(reviewResult[filename], responseChatgpt.Choices[0].Message.Content)
 	}
 
-	comments, _, err := clientGithub.PullRequests.ListComments(ctx, repo.Owner.GetLogin(), repo.GetName(), *githubPRID, nil)
+	reviews, _, err := clientGithub.PullRequests.ListReviews(ctx, repo.Owner.GetLogin(), repo.GetName(), *githubPRID, nil)
 	if err != nil {
 		fmt.Printf("Error getting comments: %v", err)
 		return
 	}
-	if len(comments) > 0 {
+	if len(reviews) > 0 {
 		// Delete previous comments
-		for _, comment := range comments {
-			if comment.User.GetName() == "github-actions[bot]" {
-				_, err := clientGithub.PullRequests.DeleteComment(ctx, repo.Owner.GetLogin(), repo.GetName(), comment.GetID())
+		for _, review := range reviews {
+			if review.User.GetName() == "github-actions[bot]" {
+				_, err := clientGithub.PullRequests.DeleteComment(ctx, repo.Owner.GetLogin(), repo.GetName(), review.GetID())
 				if err != nil {
 					fmt.Printf("Error deleting comment: %v", err)
 					return
@@ -116,12 +116,12 @@ func main() {
 
 	for k, v := range reviewResult {
 		// Create a new comment
-		comment := &github.PullRequestComment{
+		review := &github.PullRequestReviewRequest{
 			CommitID: github.String(os.Getenv("GITHUB_SHA")),
 			Body:     github.String(fmt.Sprintf("Review result for file \"%s\": \n\n %s", k, v)),
-			Path:     github.String(k),
+			Event:    github.String("COMMENT"),
 		}
-		_, _, err := clientGithub.PullRequests.CreateComment(ctx, repo.Owner.GetLogin(), repo.GetName(), *githubPRID, comment)
+		_, _, err := clientGithub.PullRequests.CreateReview(ctx, repo.Owner.GetLogin(), repo.GetName(), *githubPRID, review)
 		if err != nil {
 			fmt.Printf("Error creating comment: %v", err)
 			continue
