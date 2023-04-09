@@ -20,7 +20,7 @@ func main() {
 	// Authenticating with the OpenAI API
 	openaiClient := openai.NewClient(*openaiAPIKey)
 	ctx := context.Background()
-	// Authenticating with the Github API
+	// Authenticating with the Github API providing the token
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: *githubtoken},
 	)
