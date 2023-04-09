@@ -108,7 +108,7 @@ func main() {
 				_, _, err := clientGithub.PullRequests.DeletePendingReview(ctx, repo.Owner.GetLogin(), repo.GetName(), *githubPRID, review.GetID())
 				if err != nil {
 					fmt.Printf("Error deleting comment: %v", err)
-					return
+					continue
 				}
 			}
 		}
