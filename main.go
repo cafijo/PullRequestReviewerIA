@@ -117,7 +117,9 @@ func main() {
 	for k, v := range reviewResult {
 		// Create a new comment
 		comment := &github.PullRequestComment{
-			Body: github.String(fmt.Sprintf("Review result for file \"%s\": \n\n %s", k, v)),
+			CommitID: github.String(os.Getenv("GITHUB_SHA")),
+			Body:     github.String(fmt.Sprintf("Review result for file \"%s\": \n\n %s", k, v)),
+			Path:     github.String(k),
 		}
 		_, _, err := clientGithub.PullRequests.CreateComment(ctx, repo.Owner.GetLogin(), repo.GetName(), *githubPRID, comment)
 		if err != nil {
