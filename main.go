@@ -104,7 +104,7 @@ func main() {
 	if len(reviews) > 0 {
 		// Delete previous comments
 		for _, review := range reviews {
-			if review.User.GetName() == "github-actions[bot]" {
+			if review.GetNodeID() == "pr-review-actions[bot]" {
 				_, err := clientGithub.PullRequests.DeleteComment(ctx, repo.Owner.GetLogin(), repo.GetName(), review.GetID())
 				if err != nil {
 					fmt.Printf("Error deleting comment: %v", err)
@@ -120,6 +120,7 @@ func main() {
 			CommitID: github.String(os.Getenv("GITHUB_SHA")),
 			Body:     github.String(fmt.Sprintf("Review result for file \"%s\": \n\n %s", k, v)),
 			Event:    github.String("COMMENT"),
+			NodeID:   github.String("pr-review-actions[bot]"),
 		}
 		_, _, err := clientGithub.PullRequests.CreateReview(ctx, repo.Owner.GetLogin(), repo.GetName(), *githubPRID, review)
 		if err != nil {
