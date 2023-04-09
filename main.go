@@ -113,19 +113,20 @@ func main() {
 			}
 		}
 	}
-
+	body := "Automatic Commented Review by pr-review-actions[bot]."
 	for k, v := range reviewResult {
-		// Create a new comment
-		review := &github.PullRequestReviewRequest{
-			CommitID: github.String(os.Getenv("GITHUB_SHA")),
-			Body:     github.String(fmt.Sprintf("Automatic Commented Review by pr-review-actions[bot]. \n\n\nReview result for file \"%s\": \n\n %s", k, v)),
-			NodeID:   github.String("pr-review-actions[bot]"),
-		}
-		_, _, err := clientGithub.PullRequests.CreateReview(ctx, repo.Owner.GetLogin(), repo.GetName(), *githubPRID, review)
-		if err != nil {
-			fmt.Printf("Error creating comment: %v", err)
-			continue
-		}
+		body += fmt.Sprintf(" \n\n\nReview result for file \"%s\": \n\n %s", k, v)
+	}
+
+	review := &github.PullRequestReviewRequest{
+		CommitID: github.String(os.Getenv("GITHUB_SHA")),
+		Body:     github.String(body),
+		NodeID:   github.String("pr-review-actions[bot]"),
+	}
+	_, _, err = clientGithub.PullRequests.CreateReview(ctx, repo.Owner.GetLogin(), repo.GetName(), *githubPRID, review)
+	if err != nil {
+		fmt.Printf("Error creating comment: %v", err)
+		return
 	}
 	fmt.Printf("Review result: %v", reviewResult)
 }
