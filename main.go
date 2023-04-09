@@ -9,6 +9,7 @@ import (
 	"github.com/sashabaranov/go-openai"
 	"golang.org/x/oauth2"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -26,8 +27,11 @@ func main() {
 	)
 	tc := oauth2.NewClient(ctx, ts)
 	clientGithub := github.NewClient(tc)
+	repoAndOwner := os.Getenv("GITHUB_REPOSITORY")
+	owner := repoAndOwner[:strings.Index(repoAndOwner, "/")]
+	repoName := repoAndOwner[strings.Index(repoAndOwner, "/")+1:]
 
-	repo, _, err := clientGithub.Repositories.Get(ctx, os.Getenv("GITHUB_REPOSITORY_OWNER"), os.Getenv("GITHUB_REPOSITORY"))
+	repo, _, err := clientGithub.Repositories.Get(ctx, owner, repoName)
 	if err != nil {
 		fmt.Printf("Error getting repository: %v", err)
 		return
